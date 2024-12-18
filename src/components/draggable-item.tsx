@@ -34,7 +34,6 @@ export function DraggableItem({
 		return draggable({
 			element,
 			getInitialData: () => ({
-				type: 'TODO_ITEM',
 				item,
 				sourceColumn: column,
 			}),

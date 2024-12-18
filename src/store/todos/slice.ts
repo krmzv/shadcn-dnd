@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ColumnTypes, TodoItem } from '@/types/item-types'
 import { v4 as uuidv4 } from 'uuid'
-import { DragData } from '@/components/droppable-column'
 
 export interface KanbanState {
 	[ColumnTypes.TYPE_TODO]: TodoItem[]
@@ -10,13 +9,7 @@ export interface KanbanState {
 }
 
 const initialState: KanbanState = {
-	[ColumnTypes.TYPE_TODO]: [
-		{
-			id: uuidv4(),
-			name: 'Create react app',
-			description: 'Create it',
-		},
-	],
+	[ColumnTypes.TYPE_TODO]: [],
 	[ColumnTypes.TYPE_PROGRESS]: [],
 	[ColumnTypes.TYPE_DONE]: [],
 }
@@ -26,12 +19,28 @@ const kanbanSlice = createSlice({
 	initialState,
 	reducers: {
 		addTodoItem: (state, action: PayloadAction<string>) => {
-			const newItem = {
+			const newItem: TodoItem = {
 				id: uuidv4(),
 				name: action.payload,
 				description: action.payload,
 			}
 			state[ColumnTypes.TYPE_TODO].push(newItem)
+		},
+		addInProgressItem: (state, action: PayloadAction<string>) => {
+			const newItem: TodoItem = {
+				id: uuidv4(),
+				name: action.payload,
+				description: action.payload,
+			}
+			state[ColumnTypes.TYPE_PROGRESS].push(newItem)
+		},
+		addDoneItem: (state, action: PayloadAction<string>) => {
+			const newItem: TodoItem = {
+				id: uuidv4(),
+				name: action.payload,
+				description: action.payload,
+			}
+			state[ColumnTypes.TYPE_DONE].push(newItem)
 		},
 		moveItem: (
 			state,
@@ -42,6 +51,7 @@ const kanbanSlice = createSlice({
 			}>,
 		) => {
 			const { item, sourceColumn, destinationColumn } = action.payload
+			console.log(action.payload)
 
 			// Remove from source column
 			state[sourceColumn] = state[sourceColumn].filter(
@@ -64,6 +74,12 @@ const kanbanSlice = createSlice({
 	},
 })
 
-export const { moveItem, deleteItem } = kanbanSlice.actions
+export const {
+	addTodoItem,
+	addInProgressItem,
+	addDoneItem,
+	moveItem,
+	deleteItem,
+} = kanbanSlice.actions
 
 export default kanbanSlice.reducer
