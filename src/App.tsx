@@ -6,6 +6,12 @@ import { v4 as uuidv4 } from 'uuid'
 import { ColumnTypes } from './types/item-types'
 import { useSelector } from 'react-redux'
 import { RootState } from './store'
+import { useDispatch } from 'react-redux'
+import {
+	addTodoItem,
+	addInProgressItem,
+	addDoneItem,
+} from '@/store/todos/slice'
 
 const initialTodos = [
 	{
@@ -37,8 +43,22 @@ const initialDone = [
 ]
 
 function App() {
+	const dispatch = useDispatch()
 	const board = useSelector((state: RootState) => state.kanban)
 	console.log(board)
+
+	const handleAddTodoItem = (text: string) => {
+		dispatch(addTodoItem(text))
+	}
+
+	const handleAddInProgressItem = (text: string) => {
+		dispatch(addInProgressItem(text))
+	}
+
+	const handleAddDoneItem = (text: string) => {
+		dispatch(addDoneItem(text))
+	}
+
 	return (
 		<>
 			<header className="w-full border-b p-4 flex items-center justiy-start">
@@ -47,15 +67,18 @@ function App() {
 			<main className="flex w-full md:h-[calc(100vh-7.5rem)] gap-4 flex-1 justify-between py-4 ">
 				<DroppableColumn
 					items={board.TYPE_TODO}
-					title={ColumnTypes.TYPE_TODO}
+					name={ColumnTypes.TYPE_TODO}
+					handleAddItem={handleAddTodoItem}
 				></DroppableColumn>
 				<DroppableColumn
 					items={board.TYPE_PROGRESS}
-					title={ColumnTypes.TYPE_PROGRESS}
+					name={ColumnTypes.TYPE_PROGRESS}
+					handleAddItem={handleAddInProgressItem}
 				></DroppableColumn>
 				<DroppableColumn
 					items={board.TYPE_DONE}
-					title={ColumnTypes.TYPE_DONE}
+					name={ColumnTypes.TYPE_DONE}
+					handleAddItem={handleAddDoneItem}
 				></DroppableColumn>
 			</main>
 			<footer className="p-4">
