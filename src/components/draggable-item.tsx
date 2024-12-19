@@ -49,8 +49,17 @@ export function DraggableItem({
 		)
 	}
 
+	const onDoubleClick = () => {
+		alert(JSON.stringify(item))
+	}
+
 	return (
-		<Card ref={ref} {...props} className="group cursor-grab">
+		<Card
+			ref={ref}
+			{...props}
+			className="group cursor-grab"
+			onDoubleClick={onDoubleClick}
+		>
 			<CardHeader className="items-start p-4">
 				<div className="flex w-full min-h-[2rem] items-center justify-between">
 					<CardTitle className="font-medium text-base">
