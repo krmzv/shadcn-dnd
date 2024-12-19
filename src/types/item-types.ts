@@ -1,11 +1,7 @@
 export type TodoItem = {
 	id: string
 	name: string
-	description: string
-}
-
-export type ColumnType = {
-	type: 'TYPE_TODO' | 'TYPE_PROGRESS' | 'TYPE_DONE'
+	description?: string
 }
 
 export enum ColumnTypes {

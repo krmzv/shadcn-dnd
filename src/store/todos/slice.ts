@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ColumnTypes, TodoItem } from '@/types/item-types'
 import { v4 as uuidv4 } from 'uuid'
+import { initialTodos, initialProgress, initialDone } from './intial'
 
 export interface KanbanState {
 	[ColumnTypes.TYPE_TODO]: TodoItem[]
@@ -8,39 +9,33 @@ export interface KanbanState {
 	[ColumnTypes.TYPE_DONE]: TodoItem[]
 }
 
+export interface KanbanCount {
+	[ColumnTypes.TYPE_TODO]: number
+	[ColumnTypes.TYPE_PROGRESS]: number
+	[ColumnTypes.TYPE_DONE]: number
+}
+
+export type AddItemPayloadTypes = Omit<TodoItem, 'id'> & {
+	type: ColumnTypes
+}
+
 const initialState: KanbanState = {
-	[ColumnTypes.TYPE_TODO]: [],
-	[ColumnTypes.TYPE_PROGRESS]: [],
-	[ColumnTypes.TYPE_DONE]: [],
+	[ColumnTypes.TYPE_TODO]: initialTodos,
+	[ColumnTypes.TYPE_PROGRESS]: initialProgress,
+	[ColumnTypes.TYPE_DONE]: initialDone,
 }
 
 const kanbanSlice = createSlice({
 	name: 'kanban',
 	initialState,
 	reducers: {
-		addTodoItem: (state, action: PayloadAction<string>) => {
+		addItem: (state, action: PayloadAction<AddItemPayloadTypes>) => {
 			const newItem: TodoItem = {
 				id: uuidv4(),
-				name: action.payload,
-				description: action.payload,
+				name: action.payload.name,
+				description: action.payload.description,
 			}
-			state[ColumnTypes.TYPE_TODO].push(newItem)
-		},
-		addInProgressItem: (state, action: PayloadAction<string>) => {
-			const newItem: TodoItem = {
-				id: uuidv4(),
-				name: action.payload,
-				description: action.payload,
-			}
-			state[ColumnTypes.TYPE_PROGRESS].push(newItem)
-		},
-		addDoneItem: (state, action: PayloadAction<string>) => {
-			const newItem: TodoItem = {
-				id: uuidv4(),
-				name: action.payload,
-				description: action.payload,
-			}
-			state[ColumnTypes.TYPE_DONE].push(newItem)
+			state[action.payload.type].push(newItem)
 		},
 		moveItem: (
 			state,
@@ -51,7 +46,6 @@ const kanbanSlice = createSlice({
 			}>,
 		) => {
 			const { item, sourceColumn, destinationColumn } = action.payload
-			console.log(action.payload)
 
 			// Remove from source column
 			state[sourceColumn] = state[sourceColumn].filter(
@@ -74,12 +68,6 @@ const kanbanSlice = createSlice({
 	},
 })
 
-export const {
-	addTodoItem,
-	addInProgressItem,
-	addDoneItem,
-	moveItem,
-	deleteItem,
-} = kanbanSlice.actions
+export const { addItem, moveItem, deleteItem } = kanbanSlice.actions
 
 export default kanbanSlice.reducer
