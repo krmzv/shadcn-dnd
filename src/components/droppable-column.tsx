@@ -1,108 +1,29 @@
 import { useEffect, useRef, useState } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-	moveItem,
-	AddItemPayloadTypes,
-	addItem,
-	KanbanCount,
-	KanbanState,
-} from '@/store/todos/slice'
+import { moveItem } from '@/store/todos/slice'
 import { ColumnTypes, TodoItem } from '@/types/item-types'
 import { DraggableItem } from './draggable-item'
 import { RootState } from '@/store'
+import { DialogForm } from './dialog-form'
+import { selectItemsByColumn } from '@/store/todos/selectors'
 
 type DroppableColumnTypes = {
 	name: ColumnTypes
-	items: TodoItem[]
 }
 
 export type DragData = {
 	item: TodoItem
 	sourceColumn: ColumnTypes
-	destinationColumn: ColumnTypes
 }
 
-export type TodoInputProps = {
-	handleAddItem: ({ name, description, type }: AddItemPayloadTypes) => void
-	type: ColumnTypes
-}
-
-const TodoInput = ({ handleAddItem, type }: TodoInputProps) => {
-	const [name, setName] = useState('')
-	const [description, setDescription] = useState('')
-
-	const handleSubmit = () => {
-		if (name.trim()) {
-			handleAddItem({
-				name: name.trim(),
-				description: description.trim(),
-				type,
-			})
-			setDescription('')
-			setName('')
-		}
-	}
-
-	return (
-		<div className="flex flex-col w-full">
-			<Input
-				type="text"
-				value={name}
-				onChange={(e) => setName(e.target.value)}
-				placeholder="Task name"
-				className="flex-grow p-2 border rounded-l"
-			/>
-			<Input
-				type="text"
-				value={description}
-				onChange={(e) => setDescription(e.target.value)}
-				placeholder="Describe the task"
-				className="flex-grow p-2 border rounded-l"
-			/>
-			<Button variant="outline" onClick={handleSubmit}>
-				Add Todo
-			</Button>
-		</div>
-	)
-}
-
-const DroppableColumn = ({ name, items }: DroppableColumnTypes) => {
+const DroppableColumn = ({ name }: DroppableColumnTypes) => {
 	const ref = useRef(null)
 	const dispatch = useDispatch()
 	const [isOver, setIsOver] = useState(false)
 
-	const board: KanbanState = useSelector((state: RootState) => state.kanban)
-
-	const count = Object.keys(board).reduce<KanbanCount>(
-		(acc, curr) => {
-			acc[curr as keyof KanbanCount] =
-				board[curr as keyof KanbanState].length
-			return acc
-		},
-		{
-			[ColumnTypes.TYPE_TODO]: 0,
-			[ColumnTypes.TYPE_PROGRESS]: 0,
-			[ColumnTypes.TYPE_DONE]: 0,
-		},
-	)
-
-	const handleAddItem = ({
-		name,
-		description,
-		type,
-	}: AddItemPayloadTypes) => {
-		dispatch(
-			addItem({
-				name,
-				description,
-				type,
-			}),
-		)
-	}
+	const items = useSelector((state: RootState) => selectItemsByColumn(state, name))
 
 	useEffect(() => {
 		const element = ref.current
@@ -111,10 +32,11 @@ const DroppableColumn = ({ name, items }: DroppableColumnTypes) => {
 		return dropTargetForElements({
 			element,
 			canDrop: (args) => {
-				// Prevent dropping in the same column
 				return args.source.data.sourceColumn !== name
 			},
-			onDragEnter: () => setIsOver(true),
+			onDragEnter: () => {
+				setIsOver(true)
+			},
 			onDragLeave: () => setIsOver(false),
 			onDrop: (args) => {
 				const data = args.source.data as DragData
@@ -129,26 +51,34 @@ const DroppableColumn = ({ name, items }: DroppableColumnTypes) => {
 			},
 		})
 	}, [name, dispatch])
+
+	const scrollAreaBg = `${
+		isOver
+			? 'bg-green-50 outline outline-green-500 outline-offset-1 outline-1 outline-dashed box-border rounded-md'
+			: ''
+	}`
+	const scrollAreaClass = `w-full max-w-full p-2 h-full ${scrollAreaBg}`
+
 	return (
 		<section
 			ref={ref}
 			className="flex flex-col flex-1 items-start h-full bg-zinc-100 rounded-md p-4"
 		>
-			<h1 className="font-bold pb-2">
-				{name} ({count[name]})
-			</h1>
-			<TodoInput type={name} handleAddItem={handleAddItem} />
-			<ScrollArea className="w-full py-2">
-				<div className="flex flex-col gap-2">
-					{items.map((item, index) => {
-						return (
-							<DraggableItem
-								key={item.id}
-								item={item}
-								column={name}
-							/>
-						)
-					})}
+			<div className="flex w-full items-center justify-between pb-2">
+				<h1 className="font-bold">
+					{name} ({items.length})
+				</h1>
+				<DialogForm type={name}/>
+			</div>
+			<ScrollArea className={scrollAreaClass}>
+				<div className="flex flex-col gap-2 min-h-max">
+					{items.map((item) => (
+						<DraggableItem 
+							key={item.id}
+							item={item} 
+							column={name}
+						/>
+					))}
 				</div>
 			</ScrollArea>
 		</section>

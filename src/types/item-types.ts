@@ -1,7 +1,8 @@
 export type TodoItem = {
-	id: string
+	id?: string
 	name: string
 	description?: string
+	type?: ColumnTypes
 }
 
 export enum ColumnTypes {
