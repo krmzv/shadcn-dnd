@@ -1,41 +1,50 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, current } from '@reduxjs/toolkit'
 import { ColumnTypes, TodoItem } from '@/types/item-types'
 import { v4 as uuidv4 } from 'uuid'
 import { initialTodos, initialProgress, initialDone } from './intial'
 
 export interface KanbanState {
-	[ColumnTypes.TYPE_TODO]: TodoItem[]
-	[ColumnTypes.TYPE_PROGRESS]: TodoItem[]
-	[ColumnTypes.TYPE_DONE]: TodoItem[]
-}
-
-export interface KanbanCount {
-	[ColumnTypes.TYPE_TODO]: number
-	[ColumnTypes.TYPE_PROGRESS]: number
-	[ColumnTypes.TYPE_DONE]: number
-}
-
-export type AddItemPayloadTypes = Omit<TodoItem, 'id'> & {
-	type: ColumnTypes
+	items: TodoItem[]
 }
 
 const initialState: KanbanState = {
-	[ColumnTypes.TYPE_TODO]: initialTodos,
-	[ColumnTypes.TYPE_PROGRESS]: initialProgress,
-	[ColumnTypes.TYPE_DONE]: initialDone,
+	items: [
+		...initialTodos.map((item) => ({
+			...item,
+			type: ColumnTypes.TYPE_TODO,
+		})),
+		...initialProgress.map((item) => ({
+			...item,
+			type: ColumnTypes.TYPE_PROGRESS,
+		})),
+		...initialDone.map((item) => ({
+			...item,
+			type: ColumnTypes.TYPE_DONE,
+		})),
+	],
 }
 
 const kanbanSlice = createSlice({
 	name: 'kanban',
 	initialState,
 	reducers: {
-		addItem: (state, action: PayloadAction<AddItemPayloadTypes>) => {
+		addItem: (state, action: PayloadAction<TodoItem>) => {
 			const newItem: TodoItem = {
 				id: uuidv4(),
 				name: action.payload.name,
 				description: action.payload.description,
+				type: action.payload.type,
 			}
-			state[action.payload.type].push(newItem)
+			state.items.push(newItem)
+		},
+		updateItem: (state, action: PayloadAction<TodoItem>) => {
+			const { id, name, description, type } = action.payload
+			if (!id) return
+
+			const itemIndex = state.items.findIndex((item) => item.id === id)
+			if (itemIndex !== -1) {
+				state.items[itemIndex] = { id, name, description, type }
+			}
 		},
 		moveItem: (
 			state,
@@ -45,29 +54,27 @@ const kanbanSlice = createSlice({
 				destinationColumn: ColumnTypes
 			}>,
 		) => {
-			const { item, sourceColumn, destinationColumn } = action.payload
-
-			// Remove from source column
-			state[sourceColumn] = state[sourceColumn].filter(
-				(i) => i.id !== item.id,
-			)
-
-			// Add to destination column
-			state[destinationColumn].push(item)
+			const { item, destinationColumn } = action.payload
+    
+			state.items = state.items.filter(i => i.id !== item.id)
+			
+			state.items.push({
+				...item,
+				type: destinationColumn
+			})
 		},
 		deleteItem: (
 			state,
 			action: PayloadAction<{
 				itemId: string
-				column: ColumnTypes
 			}>,
 		) => {
-			const { itemId, column } = action.payload
-			state[column] = state[column].filter((i) => i.id !== itemId)
+			const { itemId } = action.payload
+			state.items = state.items.filter((item) => item.id !== itemId)
 		},
 	},
 })
 
-export const { addItem, moveItem, deleteItem } = kanbanSlice.actions
+export const { addItem, updateItem, moveItem, deleteItem } = kanbanSlice.actions
 
 export default kanbanSlice.reducer
