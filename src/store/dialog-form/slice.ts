@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ColumnTypes, TodoItem } from '@/types/item-types'
 
+export type DialogFormMode = 'edit' | 'done'
+
 export interface DialogFormState {
 	isOpen: boolean
 	formData: {
@@ -9,7 +11,7 @@ export interface DialogFormState {
 		description: string
 		type: ColumnTypes
 	}
-	mode: 'edit' | 'create'
+	mode: DialogFormMode
 }
 
 const initialState: DialogFormState = {
@@ -19,7 +21,7 @@ const initialState: DialogFormState = {
 		description: '',
 		type: ColumnTypes.TYPE_TODO,
 	},
-	mode: 'create',
+	mode: 'create' as DialogFormMode,
 }
 
 export const dialogFormSlice = createSlice({
@@ -39,9 +41,9 @@ export const dialogFormSlice = createSlice({
 				id: initialData?.id,
 				name: initialData?.name ?? '',
 				description: initialData?.description ?? '',
-				type: type
+				type: type,
 			}
-			state.mode = initialData ? 'edit' : 'create'
+			state.mode = initialData ? 'edit' : 'create' as DialogFormMode
 		},
 		closeDialog: (state) => {
 			state.isOpen = false

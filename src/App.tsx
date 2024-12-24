@@ -1,22 +1,25 @@
 import './App.css'
-import { DroppableColumn } from './components/droppable-column'
-import { ColumnTypes } from './types/item-types'
-import { useSelector } from 'react-redux'
-import { RootState } from './store'
+import { DroppableColumn } from '@/components/droppable-column'
+import { ColumnTypes } from '@/types/item-types'
+import { Search } from '@/components/search'
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 
 function App() {
 	return (
 		<>
-			<header className="w-full border-b p-4 flex items-center justiy-start">
+			<header className="w-full border-b p-4 flex flex-col items-start md:flex-row md:items-center md:justify-between">
 				<span className="font-bold italic font-xs">todos.</span>
+				<Search />
 			</header>
-			<main className="flex w-full md:h-[calc(100vh-7.5rem)] gap-4 flex-1 justify-between py-4 ">
-				<DroppableColumn name={ColumnTypes.TYPE_TODO} />
-				<DroppableColumn name={ColumnTypes.TYPE_PROGRESS} />
-				<DroppableColumn name={ColumnTypes.TYPE_DONE} />
+			<main className="flex w-full max-w-full overflow-x-auto h-[calc(100vh-6.45rem)] gap-4 flex-1 justify-between p-4 ">
+				{Object.keys(ColumnTypes).map((column, index) => (
+					<DroppableColumn key={index} name={column as ColumnTypes} />
+				))}
 			</main>
-			<footer className="p-2">
-				<span className="font-xs">todos. Copyright</span>
+			<footer>
+				<VisuallyHidden.Root>
+					todos. Copyright {new Date().getFullYear()}
+				</VisuallyHidden.Root>
 			</footer>
 		</>
 	)
