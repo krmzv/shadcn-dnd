@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { DroppableColumn } from '@/components/droppable-column'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
-import kanbanReducer from '@/store/todos/slice'
+import kanbanReducer from '@/store/kanban/slice'
 import dialogFormReducer from '@/store/dialog-form/slice'
 import { ColumnTypes } from '@/types/item-types'
 

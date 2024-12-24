@@ -1,58 +1,68 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { Provider } from 'react-redux'
-import { configureStore } from '@reduxjs/toolkit'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { screen, fireEvent } from '@testing-library/react'
 import { DialogForm } from './dialog-form'
 import { ColumnTypes, TodoItem } from '@/types/item-types'
-import kanbanReducer from '@/store/todos/slice'
-import dialogFormReducer from '@/store/dialog-form/slice'
+import { createTestStore, renderWithProvider } from '@/test-setup'
+
+const mockHandleUpdateItem = vi.fn()
+const mockHandleAddItem = vi.fn()
 
 vi.mock('@/hooks/useTodos', () => ({
   useTodos: () => ({
-    handleAddItem: vi.fn(),
-    handleUpdateItem: vi.fn(),
-  }),
+    handleAddItem: mockHandleAddItem,
+    handleUpdateItem: mockHandleUpdateItem
+  })
 }))
 
-const createTestStore = (initialState = {}) => {
-  return configureStore({
-    reducer: {
-      kanban: kanbanReducer,
-      dialogForm: dialogFormReducer,
-    },
-    preloadedState: initialState,
-  })
-}
+let store: ReturnType<typeof createTestStore>
 
-const renderWithProvider = (ui: React.ReactElement, store = createTestStore()) => {
-  return render(<Provider store={store}>{ui}</Provider>)
-}
 
 describe('DialogForm', () => {
-  it('renders in edit mode and handles update', () => {
-    const initialData: TodoItem = {
-      id: '1',
-      name: 'Test Todo',
-      description: 'Test Description',
-      type: ColumnTypes.TYPE_TODO,
-    }
+  const mockItem: TodoItem = {
+    id: '1',
+    name: 'Test Todo',
+    description: 'Test Description',
+    type: ColumnTypes.TYPE_TODO,
+  }
 
-    const store = createTestStore({
+  beforeEach(() => {
+    store = createTestStore({
       dialogForm: {
         isOpen: true,
-        formData: initialData,
         mode: 'edit',
-      },
+        formData: mockItem
+      }
     })
+    
+    mockHandleUpdateItem.mockClear()
+    mockHandleAddItem.mockClear()
+  })
 
+  it('handles form editing and submission', () => {
     renderWithProvider(
-      <DialogForm type={ColumnTypes.TYPE_TODO} initialData={initialData} />,
+      <DialogForm 
+        type={ColumnTypes.TYPE_TODO} 
+        initialData={mockItem} 
+      />,
       store
     )
 
-    expect(screen.getByText('Edit Todo')).toBeInTheDocument()
-    
-    const submitButton = screen.getByRole('button', { name: /save changes/i })
-    fireEvent.submit(submitButton)
+    const nameInput = screen.getByLabelText('Name')
+    const descriptionInput = screen.getByLabelText('Description')
+
+    fireEvent.change(nameInput, { target: { value: 'Updated Todo' } })
+    fireEvent.change(descriptionInput, { target: { value: 'Updated Description' } })
+
+    const form = screen.getByRole('form')
+    fireEvent.submit(form)
+
+    expect(mockHandleUpdateItem).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: '1',
+        name: 'Updated Todo',
+        description: 'Updated Description',
+        type: ColumnTypes.TYPE_TODO
+      })
+    )
   })
 })

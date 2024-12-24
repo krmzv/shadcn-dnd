@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import kanbanReducer, { KanbanState } from './todos/slice'
+import kanbanReducer, { KanbanState } from './kanban/slice'
 import dialogFormSlice, { DialogFormState } from './dialog-form/slice'
 import { listenerMiddleware } from './listener'
 import './_middlewares/local-storage'

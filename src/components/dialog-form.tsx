@@ -65,7 +65,7 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
-				<form onSubmit={handleSubmit}>
+				<form onSubmit={handleSubmit} role="form">
 					<DialogHeader>
 						<DialogTitle>
 							{isEditing ? 'Edit Todo' : 'Create New Todo'}
