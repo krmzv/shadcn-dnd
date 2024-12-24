@@ -22,7 +22,6 @@ const createTestStore = (initialState = {}) => {
 	})
 }
 
-// Test provider wrapper
 const renderWithProvider = (
 	ui: React.ReactElement,
 	store = createTestStore(),
