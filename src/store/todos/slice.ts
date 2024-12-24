@@ -1,27 +1,14 @@
-import { createSlice, PayloadAction, current } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ColumnTypes, TodoItem } from '@/types/item-types'
 import { v4 as uuidv4 } from 'uuid'
-import { initialTodos, initialProgress, initialDone } from './intial'
+import { initialItems } from './intial'
 
 export interface KanbanState {
 	items: TodoItem[]
 }
 
 const initialState: KanbanState = {
-	items: [
-		...initialTodos.map((item) => ({
-			...item,
-			type: ColumnTypes.TYPE_TODO,
-		})),
-		...initialProgress.map((item) => ({
-			...item,
-			type: ColumnTypes.TYPE_PROGRESS,
-		})),
-		...initialDone.map((item) => ({
-			...item,
-			type: ColumnTypes.TYPE_DONE,
-		})),
-	],
+	items: [...initialItems],
 }
 
 const kanbanSlice = createSlice({
@@ -55,22 +42,17 @@ const kanbanSlice = createSlice({
 			}>,
 		) => {
 			const { item, destinationColumn } = action.payload
-    
-			state.items = state.items.filter(i => i.id !== item.id)
-			
+
+			state.items = state.items.filter((i) => i.id !== item.id)
+
 			state.items.push({
 				...item,
-				type: destinationColumn
+				type: destinationColumn,
 			})
 		},
-		deleteItem: (
-			state,
-			action: PayloadAction<{
-				itemId: string
-			}>,
-		) => {
-			const { itemId } = action.payload
-			state.items = state.items.filter((item) => item.id !== itemId)
+		deleteItem: (state, action: PayloadAction<Pick<TodoItem, 'id'>>) => {
+			const { id } = action.payload
+			state.items = state.items.filter((item) => item.id !== id)
 		},
 	},
 })

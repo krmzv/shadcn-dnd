@@ -12,6 +12,11 @@ import {
 } from '@/store/dialog-form/slice'
 import { ColumnTypes, TodoItem } from '@/types/item-types'
 
+type HandleOpenT = {
+	type: ColumnTypes
+	initialData?: TodoItem
+}
+
 export const useDialogForm = () => {
 	const dispatch = useDispatch()
 
@@ -21,7 +26,7 @@ export const useDialogForm = () => {
 	const isValid = useSelector(selectFormIsValid)
 
 	const handleOpen = useCallback(
-		(type: ColumnTypes, initialData?: TodoItem) => {
+		({type, initialData} : HandleOpenT) => {
 			dispatch(openDialog({ type, initialData }))
 		},
 		[dispatch],

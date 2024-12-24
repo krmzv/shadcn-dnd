@@ -19,7 +19,6 @@ import { useTodos } from '@/hooks/useTodos'
 export type DialogFormProps = {
 	initialData?: TodoItem
 	type: ColumnTypes
-	trigger?: React.ReactNode
 }
 
 export function DialogForm({ type, initialData }: DialogFormProps) {
@@ -35,10 +34,10 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 	} = useDialogForm()
 
 	const { handleAddItem, handleUpdateItem } = useTodos()
-	
+
 	const handleOpenChange = (open: boolean) => {
 		if (open) {
-			handleOpen(type, initialData)
+			handleOpen({ type, initialData })
 		} else {
 			handleClose()
 		}
@@ -80,7 +79,7 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 
 					<div className="grid gap-4 py-4">
 						<p>{formData.type}</p>
-						<div className="grid grid-cols-4 items-center gap-4">
+						<div className="flex flex-col items-start gap-4">
 							<Label htmlFor="name" className="text-right">
 								Name
 							</Label>
@@ -94,7 +93,7 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 								required
 							/>
 						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
+						<div className="flex flex-col items-start gap-4">
 							<Label htmlFor="description" className="text-right">
 								Description
 							</Label>

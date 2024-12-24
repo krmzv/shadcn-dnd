@@ -7,11 +7,10 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { TodoItem, ColumnTypes } from '@/types/item-types'
-import { deleteItem } from '@/store/todos/slice'
-import { useDispatch } from 'react-redux'
 import { useDialogForm } from '@/hooks/useDialogForm'
+import { useTodos } from '@/hooks/useTodos'
 
 type CardProps = React.ComponentProps<typeof Card>
 
@@ -26,8 +25,7 @@ export function DraggableItem({
 	...props
 }: DraggableItemProps & CardProps) {
 	const ref = useRef(null)
-	const dispatch = useDispatch()
-	const [grabbing, setGrabbing] = useState<boolean>(false)
+	const { handleDeleteItem } = useTodos()
 	const { handleOpen } = useDialogForm()
 
 	useEffect(() => {
@@ -40,19 +38,17 @@ export function DraggableItem({
 				item,
 				sourceColumn: column,
 			}),
-			onDragStart: () => setGrabbing(true),
-			onDrop: () => setGrabbing(false),
 		})
 	}, [item, column])
 
-	const handleDeleteItem = () => {
-		dispatch(deleteItem({ itemId: item.id! }))
+	const handleDelete = () => {
+		handleDeleteItem({ id: item.id })
 	}
 
 	const handleDoubleClick = (e: React.MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
-		handleOpen(column, item)
+		handleOpen({ type: column, initialData: item })
 	}
 
 	const cardAnimation =
@@ -60,27 +56,31 @@ export function DraggableItem({
 	const cardClass = `group cursor-grab box-border ${cardAnimation}`
 
 	return (
+		<li>
 		<Card
 			ref={ref}
 			{...props}
 			className={cardClass}
 			onDoubleClick={handleDoubleClick}
 		>
-			<CardHeader className="items-start p-4">
+			<CardHeader className="items-start p-3">
 				<div className="flex w-full min-h-[2rem] items-center justify-between">
-					<CardTitle className="font-medium text-base">
+					<CardTitle className="text-start font-medium text-sm md:text-base">
 						{item.name}
 					</CardTitle>
 					<Button
 						variant="destructive"
-						className="p-2 h-auto hidden group-hover:block"
-						onClick={handleDeleteItem}
+						className="p-2 h-auto invisible group-hover:visible"
+						onClick={handleDelete}
 					>
 						<XIcon />
 					</Button>
 				</div>
-				<CardDescription>{item.description}</CardDescription>
+				<CardDescription className="text-start">
+					{item.description}
+				</CardDescription>
 			</CardHeader>
 		</Card>
+		</li>
 	)
 }
