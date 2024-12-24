@@ -9,101 +9,98 @@ import dialogFormReducer, { openDialog } from '@/store/dialog-form/slice'
 import { createTestStore, renderWithProvider } from '@/test-setup'
 
 vi.mock('@atlaskit/pragmatic-drag-and-drop/element/adapter', () => ({
-  draggable: vi.fn(() => () => {}),
+	draggable: vi.fn(() => () => {}),
 }))
 
 const mockHandleOpen = vi.fn(({ type, initialData }) => {
-  store.dispatch(openDialog({ type, initialData }))
+	store.dispatch(openDialog({ type, initialData }))
 })
 
-// Mock the useDialogForm hook
 vi.mock('@/hooks/useDialogForm', () => ({
-  useDialogForm: () => ({
-    handleOpen: mockHandleOpen
-  })
+	useDialogForm: () => ({
+		handleOpen: mockHandleOpen,
+	}),
 }))
 
 let store: ReturnType<typeof createTestStore>
 
-
 describe('DraggableItem', () => {
-  const mockItem: TodoItem = {
-    id: '1',
-    name: 'Test Todo',
-    description: 'Test Description',
-    type: ColumnTypes.TYPE_TODO,
-  }
+	const mockItem: TodoItem = {
+		id: '1',
+		name: 'Test Todo',
+		description: 'Test Description',
+		type: ColumnTypes.TYPE_TODO,
+	}
 
-  beforeEach(() => {
-    store = createTestStore({
-      dialogForm: {
-        isOpen: false,
-        mode: 'create',
-        formData: {
-          name: '',
-          description: '',
-          type: ColumnTypes.TYPE_TODO
-        }
-      },
-      kanban: {
-        items: [mockItem]
-      }
-    })
-    
-    mockHandleOpen.mockClear()
-  })
+	beforeEach(() => {
+		store = createTestStore({
+			dialogForm: {
+				isOpen: false,
+				mode: 'create',
+				formData: {
+					name: '',
+					description: '',
+					type: ColumnTypes.TYPE_TODO,
+				},
+			},
+			kanban: {
+				items: [mockItem],
+			},
+		})
 
-  it('renders item content correctly', () => {
-    renderWithProvider(
-      <DraggableItem item={mockItem} column={ColumnTypes.TYPE_TODO} />
-    )
+		mockHandleOpen.mockClear()
+	})
 
-    expect(screen.getByText('Test Todo')).toBeInTheDocument()
-    expect(screen.getByText('Test Description')).toBeInTheDocument()
-  })
+	it('renders item content correctly', () => {
+		renderWithProvider(
+			<DraggableItem item={mockItem} column={ColumnTypes.TYPE_TODO} />,
+		)
 
-  it('handles item deletion through store', () => {
-    const store = createTestStore({
-      kanban: {
-        items: [mockItem]
-      }
-    })
+		expect(screen.getByText('Test Todo')).toBeInTheDocument()
+		expect(screen.getByText('Test Description')).toBeInTheDocument()
+	})
 
-    renderWithProvider(
-      <DraggableItem item={mockItem} column={ColumnTypes.TYPE_TODO} />,
-      store
-    )
+	it('handles item deletion through store', () => {
+		const store = createTestStore({
+			kanban: {
+				items: [mockItem],
+			},
+		})
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
+		renderWithProvider(
+			<DraggableItem item={mockItem} column={ColumnTypes.TYPE_TODO} />,
+			store,
+		)
 
-    expect(store.getState().kanban.items).toHaveLength(0)
-  })
+		const deleteButton = screen.getByRole('button', { name: /delete/i })
+		fireEvent.click(deleteButton)
 
-  it('opens dialog form in edit mode on double click', () => {
-    renderWithProvider(
-      <DraggableItem item={mockItem} column={ColumnTypes.TYPE_TODO} />,
-      store
-    )
+		expect(store.getState().kanban.items).toHaveLength(0)
+	})
 
-    const card = screen.getByTestId('draggable-card')
-    fireEvent.doubleClick(card)
+	it('opens dialog form in edit mode on double click', () => {
+		renderWithProvider(
+			<DraggableItem item={mockItem} column={ColumnTypes.TYPE_TODO} />,
+			store,
+		)
 
-    // Check if the mock was called with correct arguments
-    expect(mockHandleOpen).toHaveBeenCalledWith({
-      type: ColumnTypes.TYPE_TODO,
-      initialData: mockItem
-    })
+		const card = screen.getByTestId('draggable-card')
+		fireEvent.doubleClick(card)
 
-    expect(store.getState().dialogForm).toEqual({
-      isOpen: true,
-      mode: 'edit',
-      formData: {
-        id: mockItem.id,
-        name: mockItem.name,
-        description: mockItem.description,
-        type: mockItem.type
-      }
-    })
-  })
+		expect(mockHandleOpen).toHaveBeenCalledWith({
+			type: ColumnTypes.TYPE_TODO,
+			initialData: mockItem,
+		})
+
+		expect(store.getState().dialogForm).toEqual({
+			isOpen: true,
+			mode: 'edit',
+			formData: {
+				id: mockItem.id,
+				name: mockItem.name,
+				description: mockItem.description,
+				type: mockItem.type,
+			},
+		})
+	})
 })

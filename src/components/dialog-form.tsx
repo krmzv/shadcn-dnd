@@ -60,7 +60,11 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 	return (
 		<Dialog open={isOpen} onOpenChange={handleOpenChange}>
 			<DialogTrigger asChild>
-				<Button variant="outline" className="h-8 px-2">
+				<Button
+					aria-label="create todo"
+					variant="outline"
+					className="h-8 px-2"
+				>
 					<PlusIcon />
 				</Button>
 			</DialogTrigger>

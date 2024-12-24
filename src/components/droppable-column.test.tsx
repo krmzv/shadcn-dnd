@@ -68,12 +68,12 @@ describe('DroppableColumn', () => {
 		expect(screen.getByTestId('column-title')).toHaveTextContent('Todo (0)')
 	})
 
-	// it('renders add button in column header', () => {
-	// 	renderWithProvider(<DroppableColumn name={ColumnTypes.TYPE_TODO} />)
+	it('renders add button in column header', () => {
+		renderWithProvider(<DroppableColumn name={ColumnTypes.TYPE_TODO} />)
 
-	// 	const addButton = screen.getByRole('button', { name: /create todo/i })
-	// 	expect(addButton).toBeInTheDocument()
-	// })
+		const addButton = screen.getByRole('button', { name: /create todo/i })
+		expect(addButton).toBeInTheDocument()
+	})
 
 	it('renders todo items for the correct column', () => {
 		const store = createTestStore({
