@@ -1,11 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { Provider } from 'react-redux'
-import { configureStore } from '@reduxjs/toolkit'
+import { screen, fireEvent } from '@testing-library/react'
 import { DraggableItem } from './draggable-item'
 import { ColumnTypes, TodoItem } from '@/types/item-types'
-import kanbanReducer from '@/store/kanban/slice'
-import dialogFormReducer, { openDialog } from '@/store/dialog-form/slice'
+import { openDialog } from '@/store/dialog-form/slice'
 import { createTestStore, renderWithProvider } from '@/test-setup'
 
 vi.mock('@atlaskit/pragmatic-drag-and-drop/element/adapter', () => ({

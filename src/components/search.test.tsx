@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { screen, fireEvent } from '@testing-library/react'
 import { Search } from './search'
-import { ColumnTypes, TodoItem } from '@/types/item-types'
+import { ColumnTypes } from '@/types/item-types'
 import { openDialog } from '@/store/dialog-form/slice'
 import { createTestStore, renderWithProvider } from '@/test-setup'
 
