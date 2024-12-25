@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { DroppableColumn } from '@/components/droppable-column'
+import { DroppableColumn } from '@/components/kanban-column'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import kanbanReducer from '@/store/kanban/slice'
@@ -67,14 +67,14 @@ describe('DroppableColumn', () => {
 		expect(screen.getByTestId('column-title')).toHaveTextContent('Todo (0)')
 	})
 
-	it('renders add button in column header', () => {
+	it('renders create (plus) button in column header', () => {
 		renderWithProvider(<DroppableColumn name={ColumnTypes.TYPE_TODO} />)
 
-		const addButton = screen.getByRole('button', { name: /create todo/i })
+		const addButton = screen.getByRole('button', { name: /create a new task/i })
 		expect(addButton).toBeInTheDocument()
 	})
 
-	it('renders todo items for the correct column', () => {
+	it('renders todo items in the appropriate column', () => {
 		const store = createTestStore({
 			kanban: {
 				items: [

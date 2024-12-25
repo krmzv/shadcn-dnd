@@ -14,7 +14,9 @@ import { PlusIcon } from 'lucide-react'
 import { ColumnTypes, TodoItem } from '@/types/item-types'
 import { Textarea } from '@/components/ui/textarea'
 import { useDialogForm } from '@/hooks/useDialogForm'
-import { useTodos } from '@/hooks/useTodos'
+import { useTodos } from '@/hooks/useTodos'		
+import { mapColumnNames } from '@/components/kanban-column'
+import { useRef, useEffect } from 'react'
 
 export type DialogFormProps = {
 	initialData?: TodoItem
@@ -27,17 +29,24 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 		formData,
 		isEditing,
 		isValid,
-		handleOpen,
+		handleOpenDialogForm,
 		handleClose,
 		handleUpdateField,
 		handleReset,
 	} = useDialogForm()
 
 	const { handleAddItem, handleUpdateItem } = useTodos()
+	const inputRef = useRef<HTMLInputElement>(null)
+
+	useEffect(() => {
+		if (isOpen) {
+			inputRef.current?.focus()
+		}
+	}, [isOpen])
 
 	const handleOpenChange = (open: boolean) => {
 		if (open) {
-			handleOpen({ type, initialData })
+			handleOpenDialogForm({ type, initialData })
 		} else {
 			handleClose()
 		}
@@ -61,7 +70,7 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 		<Dialog open={isOpen} onOpenChange={handleOpenChange}>
 			<DialogTrigger asChild>
 				<Button
-					aria-label="create todo"
+					aria-label="create a new task"
 					variant="outline"
 					className="h-8 px-2"
 				>
@@ -72,23 +81,23 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 				<form onSubmit={handleSubmit} role="form">
 					<DialogHeader>
 						<DialogTitle>
-							{isEditing ? 'Edit Todo' : 'Create New Todo'}
+							{isEditing ? 'Edit Task' : 'Create New Task'}
 						</DialogTitle>
 						<DialogDescription>
 							{isEditing
-								? 'Update your todo item details below.'
-								: 'Add a new todo item to your list.'}
+								? 'Update your task item details below.'
+								: `Add a new task to your ${mapColumnNames[formData.type].toLowerCase()} list.`}
 						</DialogDescription>
 					</DialogHeader>
 
 					<div className="grid gap-4 py-4">
-						<p>{formData.type}</p>
 						<div className="flex flex-col items-start gap-4">
 							<Label htmlFor="name" className="text-right">
 								Name
 							</Label>
 							<Input
 								id="name"
+								ref={inputRef}
 								value={formData.name}
 								onChange={(e) =>
 									handleUpdateField('name', e.target.value)
@@ -117,7 +126,7 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 
 					<DialogFooter>
 						<Button type="submit" disabled={!isValid}>
-							{isEditing ? 'Save changes' : 'Create todo'}
+							{isEditing ? 'Save changes' : 'Create task'}
 						</Button>
 					</DialogFooter>
 				</form>

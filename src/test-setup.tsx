@@ -11,9 +11,9 @@ import dialogFormReducer from '@/store/dialog-form/slice'
 expect.extend(matchers)
 
 class ResizeObserverMock {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+	observe() {}
+	unobserve() {}
+	disconnect() {}
 }
 
 window.ResizeObserver = ResizeObserverMock as any
@@ -21,23 +21,23 @@ Element.prototype.scrollIntoView = vi.fn()
 
 // Global test store creator
 export const createTestStore = (initialState = {}) => {
-  return configureStore({
-    reducer: {
-      kanban: kanbanReducer,
-      dialogForm: dialogFormReducer,
-    },
-    preloadedState: initialState,
-  })
+	return configureStore({
+		reducer: {
+			kanban: kanbanReducer,
+			dialogForm: dialogFormReducer,
+		},
+		preloadedState: initialState,
+	})
 }
 
 // Global render with provider
 export const renderWithProvider = (
-  ui: React.ReactElement,
-  testStore = createTestStore()
+	ui: React.ReactElement,
+	testStore = createTestStore(),
 ) => {
-  return render(<Provider store={testStore}>{ui}</Provider>)
+	return render(<Provider store={testStore}>{ui}</Provider>)
 }
 
 afterEach(() => {
-  cleanup()
+	cleanup()
 })

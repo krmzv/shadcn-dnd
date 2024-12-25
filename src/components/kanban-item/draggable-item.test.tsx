@@ -9,13 +9,13 @@ vi.mock('@atlaskit/pragmatic-drag-and-drop/element/adapter', () => ({
 	draggable: vi.fn(() => () => {}),
 }))
 
-const mockHandleOpen = vi.fn(({ type, initialData }) => {
+const mockHandleOpenDialogForm = vi.fn(({ type, initialData }) => {
 	store.dispatch(openDialog({ type, initialData }))
 })
 
 vi.mock('@/hooks/useDialogForm', () => ({
 	useDialogForm: () => ({
-		handleOpen: mockHandleOpen,
+		handleOpenDialogForm: mockHandleOpenDialogForm,
 	}),
 }))
 
@@ -45,7 +45,7 @@ describe('DraggableItem', () => {
 			},
 		})
 
-		mockHandleOpen.mockClear()
+		mockHandleOpenDialogForm.mockClear()
 	})
 
 	it('renders item content correctly', () => {
@@ -84,7 +84,7 @@ describe('DraggableItem', () => {
 		const card = screen.getByTestId('draggable-card')
 		fireEvent.doubleClick(card)
 
-		expect(mockHandleOpen).toHaveBeenCalledWith({
+		expect(mockHandleOpenDialogForm).toHaveBeenCalledWith({
 			type: ColumnTypes.TYPE_TODO,
 			initialData: mockItem,
 		})

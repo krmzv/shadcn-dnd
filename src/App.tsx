@@ -1,5 +1,5 @@
 import './App.css'
-import { DroppableColumn } from '@/components/droppable-column'
+import { DroppableColumn } from '@/components/kanban-column'
 import { ColumnTypes } from '@/types/item-types'
 import { Search } from '@/components/search'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'

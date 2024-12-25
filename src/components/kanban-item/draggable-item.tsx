@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -7,7 +8,6 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
-import { useEffect, useRef } from 'react'
 import { TodoItem, ColumnTypes } from '@/types/item-types'
 import { useDialogForm } from '@/hooks/useDialogForm'
 import { useTodos } from '@/hooks/useTodos'
@@ -26,7 +26,7 @@ export function DraggableItem({
 }: DraggableItemProps & CardProps) {
 	const ref = useRef(null)
 	const { handleDeleteItem } = useTodos()
-	const { handleOpen } = useDialogForm()
+	const { handleOpenDialogForm } = useDialogForm()
 
 	useEffect(() => {
 		const element = ref.current
@@ -48,7 +48,7 @@ export function DraggableItem({
 	const handleDoubleClick = (e: React.MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
-		handleOpen({ type: column, initialData: item })
+		handleOpenDialogForm({ type: column, initialData: item })
 	}
 
 	const cardAnimation =
@@ -57,34 +57,34 @@ export function DraggableItem({
 
 	return (
 		<li>
-		<Card
-			ref={ref}
-			{...props}
-			className={cardClass}
-			onDoubleClick={handleDoubleClick}
-			data-testid="draggable-card"
-			role="button"
-			tabIndex={0}
-		>
-			<CardHeader className="items-start p-3">
-				<div className="flex w-full min-h-[2rem] items-center justify-between">
-					<CardTitle className="text-start font-medium text-sm md:text-base">
-						{item.name}
-					</CardTitle>
-					<Button
-						variant="destructive"
-						className="p-2 h-auto invisible group-hover:visible"
-						onClick={handleDelete}
-						aria-label="delete"
-					>
-						<XIcon />
-					</Button>
-				</div>
-				<CardDescription className="text-start">
-					{item.description}
-				</CardDescription>
-			</CardHeader>
-		</Card>
+			<Card
+				ref={ref}
+				{...props}
+				className={cardClass}
+				onDoubleClick={handleDoubleClick}
+				data-testid="draggable-card"
+				role="button"
+				tabIndex={0}
+			>
+				<CardHeader className="items-start p-3">
+					<div className="flex w-full min-h-[2rem] items-center justify-between">
+						<CardTitle className="text-start font-medium text-sm md:text-base">
+							{item.name}
+						</CardTitle>
+						<Button
+							variant="destructive"
+							className="p-2 h-auto invisible group-hover:visible"
+							onClick={handleDelete}
+							aria-label="delete"
+						>
+							<XIcon />
+						</Button>
+					</div>
+					<CardDescription className="text-start">
+						{item.description}
+					</CardDescription>
+				</CardHeader>
+			</Card>
 		</li>
 	)
 }
