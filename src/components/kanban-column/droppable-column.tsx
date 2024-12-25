@@ -5,7 +5,7 @@ import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
 import { DragDataT, DroppableColumnT } from '@/types/item-types'
 import { DraggableItem } from '@/components/kanban-item'
 import { useTodos } from '@/hooks/useTodos'
-import { ColumnContainer } from '@/components/kanban-column'
+import { ColumnContainer, mapColumnNames } from '@/components/kanban-column'
 
 const DroppableColumn = ({ name }: DroppableColumnT) => {
 	const ref = useRef(null)
@@ -53,8 +53,13 @@ const DroppableColumn = ({ name }: DroppableColumnT) => {
 
 	return (
 		<ColumnContainer name={name} count={items.length}>
-			<div ref={ref} className={scrollAreaClass}>
-				<ul className="flex flex-col gap-2 min-h-max">
+			<div
+				ref={ref}
+				role="region"
+    			aria-label={`${mapColumnNames[name]} items`}
+				className={scrollAreaClass}
+			>
+				<ul role="list" className="flex flex-col gap-2 min-h-max">
 					{items.map((item) => (
 						<DraggableItem
 							key={item.id}

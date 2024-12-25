@@ -17,6 +17,7 @@ import { useDialogForm } from '@/hooks/useDialogForm'
 import { useTodos } from '@/hooks/useTodos'		
 import { mapColumnNames } from '@/components/kanban-column'
 import { useRef, useEffect } from 'react'
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 
 export type DialogFormProps = {
 	initialData?: TodoItem
@@ -78,9 +79,9 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px]">
-				<form onSubmit={handleSubmit} role="form">
+				<form onSubmit={handleSubmit} role="form" aria-labelledby="dialog-title">
 					<DialogHeader>
-						<DialogTitle>
+						<DialogTitle id="dialog-title">
 							{isEditing ? 'Edit Task' : 'Create New Task'}
 						</DialogTitle>
 						<DialogDescription>
@@ -90,7 +91,10 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 						</DialogDescription>
 					</DialogHeader>
 
-					<div className="grid gap-4 py-4">
+					<fieldset className="grid gap-4 py-4">
+						<VisuallyHidden.Root>
+							<legend>Task details</legend>
+						</VisuallyHidden.Root>
 						<div className="flex flex-col items-start gap-4">
 							<Label htmlFor="name" className="text-right">
 								Name
@@ -104,6 +108,7 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 								}
 								className="col-span-3"
 								required
+								aria-required="true"
 							/>
 						</div>
 						<div className="flex flex-col items-start gap-4">
@@ -122,7 +127,7 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 								className="col-span-3"
 							/>
 						</div>
-					</div>
+					</fieldset>
 
 					<DialogFooter>
 						<Button type="submit" disabled={!isValid}>
