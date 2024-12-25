@@ -2,16 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element'
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
-import { ColumnTypes, DragDataT, DroppableColumnT } from '@/types/item-types'
-import { DraggableItem } from '@/components/draggable-item'
+import { DragDataT, DroppableColumnT } from '@/types/item-types'
+import { DraggableItem } from '@/components/kanban-item'
 import { useTodos } from '@/hooks/useTodos'
-import { ColumnContainer } from '@/components/column'
-
-export const mapColumnNames = {
-	[ColumnTypes.TYPE_TODO]: 'Todo',
-	[ColumnTypes.TYPE_PROGRESS]: 'In Progress',
-	[ColumnTypes.TYPE_DONE]: 'Done',
-}
+import { ColumnContainer } from '@/components/kanban-column'
 
 const DroppableColumn = ({ name }: DroppableColumnT) => {
 	const ref = useRef(null)
@@ -33,7 +27,7 @@ const DroppableColumn = ({ name }: DroppableColumnT) => {
 				onDragEnter: () => {
 					setIsOver(true)
 				},
-				onDragLeave: () =>  setIsOver(false),
+				onDragLeave: () => setIsOver(false),
 				onDrop: (args) => {
 					const { item, sourceColumn } = args.source.data as DragDataT
 					handleMoveItem({
@@ -48,7 +42,7 @@ const DroppableColumn = ({ name }: DroppableColumnT) => {
 				element,
 			}),
 		)
-	}, [name])
+	}, [name, handleMoveItem])
 
 	const scrollAreaBg = `${
 		isOver

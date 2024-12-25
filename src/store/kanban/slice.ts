@@ -28,10 +28,7 @@ const kanbanSlice = createSlice({
 			const { id, name, description, type } = action.payload
 			if (!id) return
 
-			const itemIndex = state.items.findIndex((item) => item.id === id)
-			if (itemIndex !== -1) {
-				state.items[itemIndex] = { id, name, description, type }
-			}
+			state.items = state.items.map((item) => item.id === id ? { id, name, description, type } : item)
 		},
 		moveItem: (
 			state,

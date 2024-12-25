@@ -25,7 +25,7 @@ export const useDialogForm = () => {
 	const isEditing = useSelector(selectIsEditing)
 	const isValid = useSelector(selectFormIsValid)
 
-	const handleOpen = useCallback(
+	const handleOpenDialogForm = useCallback(
 		({type, initialData} : HandleOpenT) => {
 			dispatch(openDialog({ type, initialData }))
 		},
@@ -52,7 +52,7 @@ export const useDialogForm = () => {
 		formData,
 		isEditing,
 		isValid,
-		handleOpen,
+		handleOpenDialogForm,
 		handleClose,
 		handleUpdateField,
 		handleReset,

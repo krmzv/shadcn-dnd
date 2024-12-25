@@ -1,6 +1,5 @@
 import { DragDataT } from '@/types/item-types'
 import { RootState } from '@/store'
-import { selectItemsByColumn } from '@/store/kanban/selectors'
 import { addItem, updateItem, moveItem, deleteItem } from '@/store/kanban/slice'
 import { DroppableColumnT, TodoItem } from '@/types/item-types'
 import { useCallback } from 'react'
@@ -9,8 +8,14 @@ import { useDispatch, useSelector } from 'react-redux'
 export const useTodos = () => {
 	const dispatch = useDispatch()
 
-	const itemsByColumn = ({ name }: DroppableColumnT) =>
-		useSelector((state: RootState) => selectItemsByColumn(state, name))
+	const items = useSelector((state: RootState) => state.kanban.items)
+
+	const itemsByColumn = useCallback(
+		({ name }: DroppableColumnT) => {
+			return items.filter((item) => item.type === name)
+		},
+		[items],
+	)
 
 	const handleAddItem = useCallback(
 		({ name, description, type }: TodoItem) => {

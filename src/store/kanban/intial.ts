@@ -22,7 +22,7 @@ export const initialItems = [
 	},
 	{
 		id: uuidv4(),
-		name: 'Finish it!',
+		name: '🚀 Launch it!',
 		description: 'Done!',
 		type: ColumnTypes.TYPE_DONE,
 	},
