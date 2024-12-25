@@ -69,7 +69,7 @@ describe('DraggableItem', () => {
 			store,
 		)
 
-		const deleteButton = screen.getByRole('button', { name: /delete/i })
+		const deleteButton = screen.getByRole('button', { name: /Delete task: Test Todo/i })
 		fireEvent.click(deleteButton)
 
 		expect(store.getState().kanban.items).toHaveLength(0)

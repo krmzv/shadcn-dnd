@@ -11,7 +11,7 @@ function App() {
 				<span className="font-bold italic font-xs">todos.</span>
 				<Search />
 			</header>
-			<main className="flex w-full max-w-full overflow-x-auto h-[calc(100vh-6.45rem)] gap-4 flex-1 justify-between p-4 ">
+			<main role="main" className="flex w-full max-w-full overflow-x-auto h-[calc(100vh-6.45rem)] gap-4 flex-1 justify-between p-4 ">
 				{Object.keys(ColumnTypes).map((column, index) => (
 					<DroppableColumn key={index} name={column as ColumnTypes} />
 				))}

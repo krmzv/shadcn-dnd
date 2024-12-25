@@ -64,20 +64,21 @@ export function DraggableItem({
 				onDoubleClick={handleDoubleClick}
 				data-testid="draggable-card"
 				role="button"
+    			aria-labelledby="card-title"
 				tabIndex={0}
 			>
 				<CardHeader className="items-start p-3">
 					<div className="flex w-full min-h-[2rem] items-center justify-between">
-						<CardTitle className="text-start font-medium text-sm md:text-base">
+						<CardTitle id="card-title" className="text-start font-medium text-sm md:text-base">
 							{item.name}
 						</CardTitle>
 						<Button
 							variant="destructive"
 							className="p-2 h-auto invisible group-hover:visible"
 							onClick={handleDelete}
-							aria-label="delete"
+							aria-label={`Delete task: ${item.name}`}
 						>
-							<XIcon />
+							<XIcon aria-hidden="true" />
 						</Button>
 					</div>
 					<CardDescription className="text-start">
