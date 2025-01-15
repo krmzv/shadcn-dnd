@@ -58,9 +58,18 @@ export function DialogForm({ type, initialData }: DialogFormProps) {
 		if (!isValid) return
 
 		if (isEditing && formData.id) {
-			handleUpdateItem(formData)
+			handleUpdateItem({
+				id: formData.id,
+				name: formData.name,
+				description: formData.description,
+				type: formData.type
+			})
 		} else {
-			handleAddItem(formData)
+			handleAddItem({
+				name: formData.name,
+				description: formData.description,
+				type: formData.type
+			})
 		}
 
 		handleClose()

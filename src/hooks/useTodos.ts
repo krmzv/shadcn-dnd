@@ -1,6 +1,6 @@
 import { DragDataT } from '@/types/item-types'
 import { RootState } from '@/store'
-import { addItem, updateItem, moveItem, deleteItem } from '@/store/kanban/slice'
+import { createItem, updateItem, moveItem, deleteItem } from '@/store/kanban/actions'
 import { DroppableColumnT, TodoItem } from '@/types/item-types'
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -18,15 +18,15 @@ export const useTodos = () => {
 	)
 
 	const handleAddItem = useCallback(
-		({ name, description, type }: TodoItem) => {
-			dispatch(addItem({ name, description, type }))
+		({ name, description, type }: Omit<TodoItem, 'id'>) => {
+			dispatch(createItem({ name, description, type }))
 		},
 		[dispatch],
 	)
 
 	const handleUpdateItem = useCallback(
-		({ id, name, description, type }: TodoItem) => {
-			dispatch(updateItem({ id, name, description, type }))
+		(item: TodoItem) => {
+			dispatch(updateItem(item))
 		},
 		[dispatch],
 	)
@@ -39,14 +39,8 @@ export const useTodos = () => {
 	)
 
 	const handleMoveItem = useCallback(
-		({ item, sourceColumn, destinationColumn }: DragDataT) => {
-			dispatch(
-				moveItem({
-					item,
-					sourceColumn,
-					destinationColumn,
-				}),
-			)
+		(dragData: DragDataT) => {
+			dispatch(moveItem(dragData))
 		},
 		[dispatch],
 	)

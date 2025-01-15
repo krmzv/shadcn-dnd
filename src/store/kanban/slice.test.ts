@@ -1,4 +1,5 @@
-import reducer, { addItem, updateItem, moveItem, deleteItem } from './slice';
+import reducer from './slice';
+import { createItem, updateItem, moveItem, deleteItem } from './actions';
 import { ColumnTypes, TodoItem } from '@/types/item-types';
 import { initialItems } from './intial';
 import { describe, expect, test } from 'vitest';
@@ -11,13 +12,13 @@ describe('kanban reducer', () => {
   });
 
   test('should handle adding a new item', () => {
-    const newTodo: TodoItem = {
+    const newTodo = {
       name: 'New Task',
       description: 'Test description',
       type: ColumnTypes.TYPE_TODO
     };
 
-    const state = reducer(undefined, addItem(newTodo));
+    const state = reducer(undefined, createItem(newTodo));
     expect(state.items).toHaveLength(initialItems.length + 1);
     expect(state.items[state.items.length - 1]).toEqual({
       ...newTodo,
