@@ -1,10 +1,10 @@
 import { isAnyOf } from '@reduxjs/toolkit'
 import { startAppListening } from '../listener'
-import { addItem, updateItem, moveItem, deleteItem } from '../kanban/slice'
+import { createItem, updateItem, moveItem, deleteItem } from '@/store/kanban/actions'
 
 startAppListening({
   matcher: isAnyOf(
-    addItem, updateItem, moveItem, deleteItem
+    createItem, updateItem, moveItem, deleteItem
   ),
   effect: (_action, listenerApi) => {
     const state = listenerApi.getState()

@@ -5,7 +5,7 @@ export enum ColumnTypes {
 }
 
 export type TodoItem = {
-	id?: string
+	id: string
 	name: string
 	description?: string
 	type?: ColumnTypes
